@@ -57,13 +57,26 @@ require_clean_repo() {
   fi
 }
 
+ensure_submodule_remotes() {
+  local repo_path="$1"
+  local upstream_url="$2"
+
+  if git -C "$repo_path" remote get-url upstream >/dev/null 2>&1; then
+    git -C "$repo_path" remote set-url upstream "$upstream_url"
+  else
+    git -C "$repo_path" remote add upstream "$upstream_url"
+  fi
+}
+
 sync_repo() {
   local path="$1"
   local upstream_branch="$2"
+  local upstream_url="$3"
   local repo_path="${CONTROL_DIR}/${path}"
 
   echo "==> Syncing ${path}"
   require_clean_repo "$repo_path" "$path"
+  ensure_submodule_remotes "$repo_path" "$upstream_url"
 
   git -C "$repo_path" fetch upstream --prune
   git -C "$repo_path" fetch origin --prune
@@ -96,9 +109,9 @@ fi
 
 require_clean_repo "$CONTROL_DIR" "ti-embedded-stack"
 
-sync_repo "auto-pts" "master"
-sync_repo "zephyr" "v3.7.0-ti-9.10"
-sync_repo "ti-openocd" "ti-release"
+sync_repo "auto-pts" "master" "https://github.com/intel/auto-pts.git"
+sync_repo "zephyr" "v3.7.0-ti-9.10" "https://github.com/TexasInstruments/simplelink-zephyr"
+sync_repo "ti-openocd" "ti-release" "https://github.com/TexasInstruments/ti-openocd.git"
 
 echo "==> Updating submodule pins in control repo"
 AUTO_SHA="$(git -C "${CONTROL_DIR}/auto-pts" rev-parse --short HEAD)"
