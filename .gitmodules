@@ -1,0 +1,12 @@
+[submodule "auto-pts"]
+	path = auto-pts
+	url = git@github.com:davidkitinberg/auto-pts.git
+	branch = integration/ti-cc2340r53
+[submodule "ti-openocd"]
+	path = ti-openocd
+	url = git@github.com:davidkitinberg/ti-openocd.git
+	branch = integration/ti-cc2340r53
+[submodule "zephyr"]
+	path = zephyr
+	url = git@github.com:davidkitinberg/simplelink-zephyr.git
+	branch = integration/ti-cc2340r53
