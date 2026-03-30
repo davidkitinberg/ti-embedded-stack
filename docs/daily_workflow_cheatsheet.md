@@ -36,6 +36,15 @@ git push origin integration/ti-cc2340r53
 
 ## Bring Upstream Updates
 
+Preferred one-command flow:
+
+```bash
+cd /home/david/ti-embedded-stack
+bash scripts/refresh_upstream_and_pin.sh
+```
+
+Manual flow:
+
 ```bash
 git fetch upstream --prune
 git checkout upstream/<upstream-branch>

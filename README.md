@@ -22,6 +22,17 @@ git submodule update --init --recursive
 bash scripts/bootstrap_stack.sh
 ```
 
+## One-Command Upstream Refresh + Pin Update
+
+```bash
+bash scripts/refresh_upstream_and_pin.sh
+```
+
+Optional flags:
+
+- `--no-push`: refresh and commit pin updates locally without pushing.
+- `--allow-dirty`: skip clean-tree checks (use with caution).
+
 ## Daily Workflow
 
 See docs/daily_workflow_cheatsheet.md.
