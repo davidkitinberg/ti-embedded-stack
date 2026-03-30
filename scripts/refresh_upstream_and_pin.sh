@@ -73,6 +73,7 @@ sync_repo() {
   local upstream_branch="$2"
   local upstream_url="$3"
   local repo_path="${CONTROL_DIR}/${path}"
+  local upstream_ref="refs/remotes/upstream/${upstream_branch}"
 
   echo "==> Syncing ${path}"
   require_clean_repo "$repo_path" "$path"
@@ -81,7 +82,10 @@ sync_repo() {
   git -C "$repo_path" fetch upstream --prune
   git -C "$repo_path" fetch origin --prune
 
-  git -C "$repo_path" branch -f "upstream/${upstream_branch}" "upstream/${upstream_branch}"
+  if ! git -C "$repo_path" show-ref --verify --quiet "$upstream_ref"; then
+    echo "ERROR: Missing upstream ref ${upstream_ref} in ${path}." >&2
+    exit 1
+  fi
 
   if git -C "$repo_path" show-ref --verify --quiet "refs/heads/${INTEGRATION_BRANCH}"; then
     git -C "$repo_path" checkout "${INTEGRATION_BRANCH}"
@@ -90,7 +94,7 @@ sync_repo() {
   fi
 
   git -C "$repo_path" pull --ff-only origin "${INTEGRATION_BRANCH}"
-  git -C "$repo_path" rebase "upstream/${upstream_branch}"
+  git -C "$repo_path" rebase "$upstream_ref"
 
   if [[ "$NO_PUSH" -eq 0 ]]; then
     git -C "$repo_path" push --force-with-lease origin "${INTEGRATION_BRANCH}"
